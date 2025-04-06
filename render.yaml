@@ -1,52 +1,24 @@
 services:
   - type: web
     name: users-service
-    env: python
+    env: docker
     plan: free
-    buildCommand: ""
-    startCommand: "python app.py"
-    envVars:
-      - key: PYTHONUNBUFFERED
-        value: "1"
-    build:
-      context: ./services/users
-      dockerfilePath: Dockerfile
+    dockerfilePath: ./services/users/Dockerfile
 
   - type: web
     name: auth-service
-    env: python
+    env: docker
     plan: free
-    buildCommand: ""
-    startCommand: "python app.py"
-    envVars:
-      - key: PYTHONUNBUFFERED
-        value: "1"
-    build:
-      context: ./services/auth
-      dockerfilePath: Dockerfile
+    dockerfilePath: ./services/auth/Dockerfile
 
   - type: web
     name: chats-service
-    env: python
+    env: docker
     plan: free
-    buildCommand: ""
-    startCommand: "python app.py"
-    envVars:
-      - key: PYTHONUNBUFFERED
-        value: "1"
-    build:
-      context: ./services/chats
-      dockerfilePath: Dockerfile
+    dockerfilePath: ./services/chats/Dockerfile
 
   - type: web
     name: messages-service
-    env: python
+    env: docker
     plan: free
-    buildCommand: ""
-    startCommand: "python app.py"
-    envVars:
-      - key: PYTHONUNBUFFERED
-        value: "1"
-    build:
-      context: ./services/messages
-      dockerfilePath: Dockerfile
+    dockerfilePath: ./services/messages/Dockerfile
