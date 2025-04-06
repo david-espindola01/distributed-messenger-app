@@ -1,7 +1,9 @@
 from flask import Flask, request, jsonify
 from controllers.controller import new_chat, get_user
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)  
 
 @app.route('/chat', methods=['POST'])
 def create_chat():

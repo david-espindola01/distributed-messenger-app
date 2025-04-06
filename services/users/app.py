@@ -1,7 +1,9 @@
 from flask import Flask, request, jsonify, send_from_directory
 from controllers.controller import register_user, get_user, get_user_by_username, list_users, activate_user
+from flask_cors import CORS
 
 app = Flask(__name__, static_folder='public', static_url_path='')
+CORS(app)  
 
 @app.route('/')
 def index():
