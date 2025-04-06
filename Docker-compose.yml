@@ -1,0 +1,62 @@
+version: "3.9"
+
+services:
+  users:
+    build:
+      context: ./services/users
+      dockerfile: Dockerfile
+    container_name: users_service
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./models:/app/models
+      - ./controllers:/app/controllers
+      - ./database:/app/database
+      - ./schema.sql:/app/schema.sql
+    environment:
+      - PYTHONUNBUFFERED=1
+
+  auth:
+    build:
+      context: ./services/auth
+      dockerfile: Dockerfile
+    container_name: auth_service
+    ports:
+      - "5001:5000"
+    volumes:
+      - ./models:/app/models
+      - ./controllers:/app/controllers
+      - ./database:/app/database
+      - ./schema.sql:/app/schema.sql
+    environment:
+      - PYTHONUNBUFFERED=1
+
+  chats:
+    build:
+      context: ./services/chats
+      dockerfile: Dockerfile
+    container_name: chats_service
+    ports:
+      - "5002:5000"
+    volumes:
+      - ./models:/app/models
+      - ./controllers:/app/controllers
+      - ./database:/app/database
+      - ./schema.sql:/app/schema.sql
+    environment:
+      - PYTHONUNBUFFERED=1
+
+  messages:
+    build:
+      context: ./services/messages
+      dockerfile: Dockerfile
+    container_name: messages_service
+    ports:
+      - "5003:5000"
+    volumes:
+      - ./models:/app/models
+      - ./controllers:/app/controllers
+      - ./database:/app/database
+      - ./schema.sql:/app/schema.sql
+    environment:
+      - PYTHONUNBUFFERED=1
