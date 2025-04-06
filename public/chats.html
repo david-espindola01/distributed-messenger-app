@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Gestión de Chats</title>
+  <style>
+    /* Estilos generales */
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f0f2f5;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    h1, h2 {
+      text-align: center;
+      color: #333;
+    }
+    /* Contenedores */
+    .section {
+      background: #fff;
+      padding: 15px 20px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .section form {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      color: #555;
+    }
+    input[type="text"],
+    textarea {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    button {
+      background: #007bff;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    /* Listado de chats y mensajes */
+    .chat-list, .messages-list {
+      max-height: 300px;
+      overflow-y: auto;
+      border: 1px solid #ddd;
+      padding: 10px;
+      border-radius: 4px;
+      margin-bottom: 10px;
+    }
+    .chat-item, .message-item {
+      padding: 8px;
+      border-bottom: 1px solid #eee;
+      cursor: pointer;
+    }
+    .chat-item:hover {
+      background: #f7f7f7;
+    }
+    .message-item:last-child {
+      border-bottom: none;
+    }
+    .info {
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    .result, .error {
+      text-align: center;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    .result {
+      color: green;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Gestión de Chats</h1>
+
+    <!-- Sección para crear un nuevo chat -->
+    <div class="section">
+      <h2>Crear Nuevo Chat</h2>
+      <form id="new-chat-form">
+        <label for="creator_id">ID del Creador:</label>
+        <input type="text" id="creator_id" name="creator_id" required>
+        <label for="participant_ids">IDs de Participantes (separados por comas):</label>
+        <input type="text" id="participant_ids" name="participant_ids" required>
+        <label for="chat_name">Nombre del Chat (opcional):</label>
+        <input type="text" id="chat_name" name="chat_name">
+        <button type="submit">Crear Chat</button>
+      </form>
+      <div id="new-chat-result" class="result"></div>
+    </div>
+
+    <!-- Sección para listar chats de un usuario -->
+    <div class="section">
+      <h2>Mis Chats</h2>
+      <form id="user-chats-form">
+        <label for="user_id">Ingresa tu ID de usuario:</label>
+        <input type="text" id="user_id" name="user_id" required>
+        <button type="submit">Cargar Chats</button>
+      </form>
+      <div id="chats-container" class="chat-list"></div>
+    </div>
+
+    <!-- Sección para ver y enviar mensajes -->
+    <div class="section">
+      <h2>Mensajes del Chat</h2>
+      <div id="selected-chat-info" class="info"></div>
+      <div id="messages-container" class="messages-list"></div>
+      <form id="send-message-form">
+        <input type="hidden" id="current_chat_id" name="chat_id">
+        <label for="sender_id">Tu ID de usuario:</label>
+        <input type="text" id="sender_id" name="sender_id" required>
+        <label for="message_content">Mensaje:</label>
+        <textarea id="message_content" name="content" required></textarea>
+        <button type="submit">Enviar Mensaje</button>
+      </form>
+      <div id="message-result" class="result"></div>
+    </div>
+  </div>
+
+  <script>
+    // Función para crear un nuevo chat
+    document.getElementById('new-chat-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const creator_id = document.getElementById('creator_id').value;
+      let participant_ids = document.getElementById('participant_ids').value;
+      // Convertir los IDs separados por comas a un array
+      participant_ids = participant_ids.split(',').map(id => id.trim());
+      const chat_name = document.getElementById('chat_name').value;
+      
+      const payload = { creator_id, participant_ids, name: chat_name };
+      
+      try {
+        const response = await fetch('http://localhost:5002/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await response.json();
+        document.getElementById('new-chat-result').textContent = "Chat creado: " + JSON.stringify(data);
+      } catch (error) {
+        document.getElementById('new-chat-result').textContent = "Error al crear chat: " + error;
+      }
+    });
+
+    // Función para cargar los chats de un usuario
+    document.getElementById('user-chats-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const user_id = document.getElementById('user_id').value;
+      try {
+        const response = await fetch('http://localhost:5002/user/' + user_id + '/chats');
+        const chats = await response.json();
+        const container = document.getElementById('chats-container');
+        container.innerHTML = "";
+        if (chats.error) {
+          container.textContent = chats.error;
+          return;
+        }
+        chats.forEach(chat => {
+          const div = document.createElement('div');
+          div.className = 'chat-item';
+          div.textContent = "Chat ID: " + chat.chat_id + " - " + (chat.name || "Sin nombre");
+          div.addEventListener('click', function() {
+            // Al hacer click, se selecciona el chat y se cargan sus mensajes
+            document.getElementById('current_chat_id').value = chat.chat_id;
+            document.getElementById('selected-chat-info').textContent = "Chat seleccionado: " + chat.chat_id;
+            loadMessages(chat.chat_id);
+          });
+          container.appendChild(div);
+        });
+      } catch (error) {
+        document.getElementById('chats-container').textContent = "Error al cargar chats: " + error;
+      }
+    });
+
+    // Función para cargar los mensajes de un chat
+    async function loadMessages(chat_id) {
+      try {
+        const response = await fetch('http://localhost:5003/chat/' + chat_id + '/messages');
+        const messages = await response.json();
+        const container = document.getElementById('messages-container');
+        container.innerHTML = "";
+        if (messages.error) {
+          container.textContent = messages.error;
+          return;
+        }
+        messages.forEach(msg => {
+          const div = document.createElement('div');
+          div.className = 'message-item';
+          div.textContent = msg.sender_id + ": " + msg.content;
+          container.appendChild(div);
+        });
+      } catch (error) {
+        document.getElementById('messages-container').textContent = "Error al cargar mensajes: " + error;
+      }
+    }
+
+    // Función para enviar un mensaje
+    document.getElementById('send-message-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const sender_id = document.getElementById('sender_id').value;
+      const chat_id = document.getElementById('current_chat_id').value;
+      const content = document.getElementById('message_content').value;
+      
+      const payload = { sender_id, chat_id, content };
+      try {
+        const response = await fetch('http://localhost:5003/message', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await response.json();
+        document.getElementById('message-result').textContent = "Mensaje enviado: " + JSON.stringify(data);
+        // Recargar mensajes del chat
+        loadMessages(chat_id);
+      } catch (error) {
+        document.getElementById('message-result').textContent = "Error al enviar mensaje: " + error;
+      }
+    });
+  </script>
+</body>
+</html>

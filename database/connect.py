@@ -2,12 +2,13 @@ import sqlite3
 import os
 from contextlib import contextmanager
 
-DB_NAME = "messenger.db"
+# Definir la ruta absoluta al archivo de base de datos dentro de la carpeta "database"
+DB_PATH = os.path.join(os.path.dirname(__file__), "messenger.db")
 
 @contextmanager
 def get_cursor():
-    conn = sqlite3.connect(DB_NAME)
-    conn.row_factory = sqlite3.Row  # permite acceso por nombre de columna
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row  # Permite acceder a las columnas por nombre
     cursor = conn.cursor()
     try:
         yield cursor
@@ -15,15 +16,14 @@ def get_cursor():
     finally:
         conn.close()
 
-
 def create_db():
-    if not os.path.exists(DB_NAME):
+    # Si el archivo de la DB no existe, se crea (si existe, no se vuelve a ejecutar)
+    if not os.path.exists(DB_PATH):
         schema_path = os.path.join(os.path.dirname(__file__), "..", "schema.sql")
         with open(schema_path, "r", encoding="utf-8") as f:
             schema = f.read()
         with get_cursor() as cursor:
             cursor.executescript(schema)
-
 
 
 # -------------------- Usuarios --------------------
@@ -106,4 +106,5 @@ def get_messages_for_chat(chat_id):
         """, (chat_id,))
         return cursor.fetchall()
 
+# Crear la base de datos (si no existe)
 create_db()

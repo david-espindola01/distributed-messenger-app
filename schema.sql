@@ -1,4 +1,4 @@
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT UNIQUE NOT NULL,
     password TEXT NOT NULL,
@@ -7,7 +7,7 @@ CREATE TABLE users (
     is_active INTEGER DEFAULT 0
 );
 
-CREATE TABLE chats (
+CREATE TABLE IF NOT EXISTS chats (
     id TEXT PRIMARY KEY, -- UUID
     name TEXT,
     created_at TEXT,
@@ -15,7 +15,7 @@ CREATE TABLE chats (
     is_active INTEGER DEFAULT 1
 );
 
-CREATE TABLE user_chat (
+CREATE TABLE IF NOT EXISTS user_chat (
     user_id INTEGER,
     chat_id TEXT,
     is_admin INTEGER DEFAULT 0,
@@ -24,7 +24,7 @@ CREATE TABLE user_chat (
     FOREIGN KEY (chat_id) REFERENCES chats(id)
 );
 
-CREATE TABLE messages (
+CREATE TABLE IF NOT EXISTS messages (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     sender_id INTEGER,
     chat_id TEXT,

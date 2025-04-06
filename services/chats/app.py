@@ -19,5 +19,5 @@ def get_user_chats(user_id):
     return jsonify([chat.to_dict() for chat in user.chats])
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5002)
+    app.run(host='0.0.0.0', port=5000)
 
