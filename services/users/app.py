@@ -1,7 +1,12 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from controllers.controller import register_user, get_user, get_user_by_username, list_users, activate_user
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='public', static_url_path='')
+
+@app.route('/')
+def index():
+    return send_from_directory(app.static_folder, 'login.html')
+
 
 @app.route('/register', methods=['POST'])
 def register():

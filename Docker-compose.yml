@@ -13,6 +13,7 @@ services:
       - ./controllers:/app/controllers
       - ./database:/app/database
       - ./schema.sql:/app/schema.sql
+      - ./public:/app/public
     environment:
       - PYTHONUNBUFFERED=1
 

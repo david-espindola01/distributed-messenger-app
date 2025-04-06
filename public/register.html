@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Registro</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h2>Registro de Usuario</h2>
+    <form id="register-form">
+      <div class="form-group">
+        <label for="register-username">Usuario</label>
+        <input type="text" id="register-username" name="username" placeholder="Nombre de usuario" required>
+      </div>
+      <div class="form-group">
+        <label for="register-password">Contraseña</label>
+        <input type="password" id="register-password" name="password" placeholder="Contraseña" required>
+      </div>
+      <div class="form-group">
+        <label for="register-first-name">Nombre</label>
+        <input type="text" id="register-first-name" name="first_name" placeholder="Tu nombre" required>
+      </div>
+      <div class="form-group">
+        <label for="register-last-name">Apellido</label>
+        <input type="text" id="register-last-name" name="last_name" placeholder="Tu apellido" required>
+      </div>
+      <button type="button" onclick="registerUser()">Registrarse</button>
+    </form>
+    <div id="register-result" class="result"></div>
+    <div id="register-error" class="error"></div>
+    <p>¿Ya tienes cuenta? <a href="login.html">Inicia sesión aquí</a>.</p>
+  </div>
+
+  <script>
+    async function registerUser() {
+      const registerResult = document.getElementById('register-result');
+      const registerError = document.getElementById('register-error');
+      registerResult.textContent = '';
+      registerError.textContent = '';
+
+      const username = document.getElementById('register-username').value;
+      const password = document.getElementById('register-password').value;
+      const first_name = document.getElementById('register-first-name').value;
+      const last_name = document.getElementById('register-last-name').value;
+
+      try {
+        const response = await fetch('http://localhost:5000/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password, first_name, last_name })
+        });
+        const data = await response.json();
+        if (response.ok) {
+          registerResult.textContent = 'Registro exitoso. Usuario: ' + JSON.stringify(data);
+        } else {
+          registerError.textContent = 'Error al registrarse: ' + (data.error || 'Desconocido');
+        }
+      } catch (error) {
+        registerError.textContent = 'Error de conexión: ' + error;
+      }
+    }
+  </script>
+</body>
+</html>
