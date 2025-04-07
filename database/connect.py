@@ -30,10 +30,16 @@ def create_db():
 
 def create_user(username, password, first_name, last_name):
     with get_cursor() as cursor:
-        cursor.execute("""
-            INSERT INTO users (username, password, first_name, last_name)
-            VALUES (?, ?, ?, ?)
-        """, (username, password, first_name, last_name))
+        try:
+            cursor.execute("""
+                INSERT INTO users (username, password, first_name, last_name)
+                VALUES (?, ?, ?, ?)
+            """, (username, password, first_name, last_name))
+        except sqlite3.IntegrityError as e:
+            if "UNIQUE constraint failed: users.username" in str(e):
+                raise ValueError("El nombre de usuario ya existe.")
+            else:
+                raise e
         return cursor.lastrowid
 
 def find_all_users():

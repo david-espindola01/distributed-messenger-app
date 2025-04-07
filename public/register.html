@@ -52,7 +52,7 @@
         });
         const data = await response.json();
         if (response.ok) {
-          registerResult.textContent = 'Registro exitoso. Usuario: ' + JSON.stringify(data);
+          registerResult.textContent = 'Registro exitoso.';
         } else {
           registerError.textContent = 'Error al registrarse: ' + (data.error || 'Desconocido');
         }

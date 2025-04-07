@@ -13,8 +13,17 @@ def index():
 @app.route('/register', methods=['POST'])
 def register():
     data = request.json
-    user = register_user(data["username"], data["password"], data["first_name"], data["last_name"])
-    return jsonify(user.to_dict())
+    try:
+        user = register_user(
+            data["username"],
+            data["password"],
+            data["first_name"],
+            data["last_name"]
+        )
+        return jsonify(user.to_dict())
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 400
+
 
 @app.route('/users/<user_id>', methods=['GET'])
 def get_user_endpoint(user_id):
