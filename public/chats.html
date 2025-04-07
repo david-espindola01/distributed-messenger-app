@@ -250,8 +250,9 @@
   </div>
 
   <script>
-    // Suponemos que el ID del usuario se almacena previamente (por ejemplo, tras iniciar sesión)
-    const userId = localStorage.getItem('user_id') || '1'; // '1' es un valor de prueba
+    const params = new URLSearchParams(window.location.search);
+    const userId = params.get('user_id') || localStorage.getItem('user_id') || '1'; 
+
 
     let currentChatId = null;
 
