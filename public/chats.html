@@ -2,243 +2,292 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Gestión de Chats</title>
+  <title>UPTC MESSENGER</title>
   <style>
-    /* Estilos generales */
+    /* Reset y estilos base */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #f0f2f5;
-      margin: 0;
-      padding: 20px;
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      background-color: #ece5dd;
+      overflow: hidden;
     }
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
+    /* Contenedor principal con dos columnas */
+    .chat-container {
+      display: flex;
+      height: 100vh;
     }
-    h1, h2 {
+    /* Sidebar (lista de chats) */
+    .sidebar {
+      width: 30%;
+      background-color: #fff;
+      border-right: 1px solid #ddd;
+      display: flex;
+      flex-direction: column;
+    }
+    .sidebar-header {
+      background-color: #075e54;
+      color: #fff;
+      padding: 15px;
+      font-size: 18px;
+      font-weight: bold;
       text-align: center;
-      color: #333;
     }
-    /* Contenedores */
-    .section {
-      background: #fff;
-      padding: 15px 20px;
-      margin-bottom: 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    .chat-list {
+      flex: 1;
+      overflow-y: auto;
     }
-    .section form {
-      margin-bottom: 15px;
+    .chat-item {
+      display: flex;
+      align-items: center;
+      padding: 15px;
+      border-bottom: 1px solid #f0f0f0;
+      cursor: pointer;
     }
-    label {
-      display: block;
+    .chat-item:hover { background-color: #f5f5f5; }
+    .chat-item .avatar {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      background-color: #ccc;
+      margin-right: 15px;
+      flex-shrink: 0;
+    }
+    .chat-item .chat-info {
+      flex: 1;
+    }
+    .chat-item .chat-info .name {
+      font-weight: bold;
+      font-size: 16px;
       margin-bottom: 5px;
-      color: #555;
     }
-    input[type="text"],
-    textarea {
-      width: 100%;
-      padding: 8px;
-      margin-bottom: 10px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      box-sizing: border-box;
+    .chat-item .chat-info .last-message {
+      font-size: 14px;
+      color: #888;
     }
-    button {
-      background: #007bff;
+    /* Área de conversación */
+    .chat-window {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background-color: #e5ddd5;
+    }
+    .chat-header {
+      background-color: #075e54;
+      color: #fff;
+      padding: 15px;
+      font-size: 18px;
+      font-weight: bold;
+      text-align: center;
+    }
+    .chat-messages {
+      flex: 1;
+      padding: 15px;
+      overflow-y: auto;
+    }
+    .message {
+      margin-bottom: 15px;
+      display: flex;
+      align-items: flex-end;
+    }
+    .message.incoming .bubble {
+      background-color: #fff;
+      color: #000;
+      border: 1px solid #ddd;
+      border-radius: 7.5px;
+      padding: 10px 15px;
+      max-width: 60%;
+    }
+    .message.outgoing {
+      justify-content: flex-end;
+    }
+    .message.outgoing .bubble {
+      background-color: #dcf8c6;
+      color: #000;
+      border-radius: 7.5px;
+      padding: 10px 15px;
+      max-width: 60%;
+    }
+    .message .time {
+      font-size: 10px;
+      color: #888;
+      margin: 0 5px;
+      align-self: flex-end;
+    }
+    /* Área de entrada */
+    .chat-input {
+      display: flex;
+      padding: 10px;
+      background-color: #f0f0f0;
+    }
+    .chat-input input {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 20px;
+      outline: none;
+      font-size: 16px;
+    }
+    .chat-input button {
+      background-color: #075e54;
       color: #fff;
       border: none;
-      padding: 10px 20px;
-      border-radius: 4px;
+      padding: 10px 15px;
+      margin-left: 10px;
+      border-radius: 20px;
       cursor: pointer;
-      font-size: 1rem;
+      font-size: 16px;
     }
-    button:hover {
-      background: #0056b3;
-    }
-    /* Listado de chats y mensajes */
-    .chat-list, .messages-list {
-      max-height: 300px;
-      overflow-y: auto;
-      border: 1px solid #ddd;
-      padding: 10px;
-      border-radius: 4px;
-      margin-bottom: 10px;
-    }
-    .chat-item, .message-item {
-      padding: 8px;
-      border-bottom: 1px solid #eee;
-      cursor: pointer;
-    }
-    .chat-item:hover {
-      background: #f7f7f7;
-    }
-    .message-item:last-child {
-      border-bottom: none;
-    }
-    .info {
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
-    .result, .error {
-      text-align: center;
-      margin-top: 10px;
-      font-weight: bold;
-    }
-    .result {
-      color: green;
-    }
-    .error {
-      color: red;
-    }
+    /* Mensajes de error o información */
+    .info { text-align: center; margin: 10px; font-weight: bold; }
+    .error { color: red; text-align: center; margin: 10px; }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Gestión de Chats</h1>
-
-    <!-- Sección para crear un nuevo chat -->
-    <div class="section">
-      <h2>Crear Nuevo Chat</h2>
-      <form id="new-chat-form">
-        <label for="creator_id">ID del Creador:</label>
-        <input type="text" id="creator_id" name="creator_id" required>
-        <label for="participant_ids">IDs de Participantes (separados por comas):</label>
-        <input type="text" id="participant_ids" name="participant_ids" required>
-        <label for="chat_name">Nombre del Chat (opcional):</label>
-        <input type="text" id="chat_name" name="chat_name">
-        <button type="submit">Crear Chat</button>
-      </form>
-      <div id="new-chat-result" class="result"></div>
+  <div class="chat-container">
+    <!-- Sidebar: lista de chats -->
+    <div class="sidebar">
+      <div class="sidebar-header">UPTC MESSENGER</div>
+      <div class="chat-list" id="chatList">
+        <!-- Los chats se cargarán aquí dinámicamente -->
+      </div>
     </div>
-
-    <!-- Sección para listar chats de un usuario -->
-    <div class="section">
-      <h2>Mis Chats</h2>
-      <form id="user-chats-form">
-        <label for="user_id">Ingresa tu ID de usuario:</label>
-        <input type="text" id="user_id" name="user_id" required>
-        <button type="submit">Cargar Chats</button>
-      </form>
-      <div id="chats-container" class="chat-list"></div>
-    </div>
-
-    <!-- Sección para ver y enviar mensajes -->
-    <div class="section">
-      <h2>Mensajes del Chat</h2>
-      <div id="selected-chat-info" class="info"></div>
-      <div id="messages-container" class="messages-list"></div>
-      <form id="send-message-form">
-        <input type="hidden" id="current_chat_id" name="chat_id">
-        <label for="sender_id">Tu ID de usuario:</label>
-        <input type="text" id="sender_id" name="sender_id" required>
-        <label for="message_content">Mensaje:</label>
-        <textarea id="message_content" name="content" required></textarea>
-        <button type="submit">Enviar Mensaje</button>
-      </form>
-      <div id="message-result" class="result"></div>
+    <!-- Área de chat: mensajes y entrada -->
+    <div class="chat-window">
+      <div class="chat-header" id="chatHeader">Seleccione un chat</div>
+      <div class="chat-messages" id="chatMessages">
+        <!-- Los mensajes se cargarán aquí -->
+      </div>
+      <div class="chat-input">
+        <input type="text" id="messageInput" placeholder="Escribe un mensaje">
+        <button onclick="sendMessage()">Enviar</button>
+      </div>
     </div>
   </div>
 
   <script>
-    // Función para crear un nuevo chat
-    document.getElementById('new-chat-form').addEventListener('submit', async function(e) {
-      e.preventDefault();
-      const creator_id = document.getElementById('creator_id').value;
-      let participant_ids = document.getElementById('participant_ids').value;
-      // Convertir los IDs separados por comas a un array
-      participant_ids = participant_ids.split(',').map(id => id.trim());
-      const chat_name = document.getElementById('chat_name').value;
-      
-      const payload = { creator_id, participant_ids, name: chat_name };
-      
-      try {
-        const response = await fetch('http://localhost:5002/chat', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-        const data = await response.json();
-        document.getElementById('new-chat-result').textContent = "Chat creado: " + JSON.stringify(data);
-      } catch (error) {
-        document.getElementById('new-chat-result').textContent = "Error al crear chat: " + error;
-      }
-    });
+    // Suponemos que el ID del usuario se almacena previamente (por ejemplo, tras iniciar sesión)
+    const userId = localStorage.getItem('user_id') || '1'; // '1' es un valor de prueba
 
-    // Función para cargar los chats de un usuario
-    document.getElementById('user-chats-form').addEventListener('submit', async function(e) {
-      e.preventDefault();
-      const user_id = document.getElementById('user_id').value;
+    let currentChatId = null;
+
+    async function loadChats() {
       try {
-        const response = await fetch('http://localhost:5002/user/' + user_id + '/chats');
-        const chats = await response.json();
-        const container = document.getElementById('chats-container');
-        container.innerHTML = "";
-        if (chats.error) {
-          container.textContent = chats.error;
+        const res = await fetch(`http://localhost:5002/user/${userId}/chats`);
+        const chats = await res.json();
+        const chatList = document.getElementById('chatList');
+        chatList.innerHTML = '';
+        if(chats.error) {
+          chatList.innerHTML = `<div class="error">${chats.error}</div>`;
           return;
         }
         chats.forEach(chat => {
-          const div = document.createElement('div');
-          div.className = 'chat-item';
-          div.textContent = "Chat ID: " + chat.chat_id + " - " + (chat.name || "Sin nombre");
-          div.addEventListener('click', function() {
-            // Al hacer click, se selecciona el chat y se cargan sus mensajes
-            document.getElementById('current_chat_id').value = chat.chat_id;
-            document.getElementById('selected-chat-info').textContent = "Chat seleccionado: " + chat.chat_id;
-            loadMessages(chat.chat_id);
-          });
-          container.appendChild(div);
-        });
-      } catch (error) {
-        document.getElementById('chats-container').textContent = "Error al cargar chats: " + error;
-      }
-    });
+          // Usa el nombre del chat o el primer participante según tu lógica
+          const name = chat.name || (chat.participants && chat.participants[0] && chat.participants[0].first_name) || 'Chat';
+          const lastMessage = chat.last_message || '';
+          const chatItem = document.createElement('div');
+          chatItem.className = 'chat-item';
+          chatItem.onclick = () => selectChat(chat.chat_id, name);
 
-    // Función para cargar los mensajes de un chat
-    async function loadMessages(chat_id) {
-      try {
-        const response = await fetch('http://localhost:5003/chat/' + chat_id + '/messages');
-        const messages = await response.json();
-        const container = document.getElementById('messages-container');
-        container.innerHTML = "";
-        if (messages.error) {
-          container.textContent = messages.error;
-          return;
-        }
-        messages.forEach(msg => {
-          const div = document.createElement('div');
-          div.className = 'message-item';
-          div.textContent = msg.sender_id + ": " + msg.content;
-          container.appendChild(div);
+          chatItem.innerHTML = `
+            <div class="avatar"></div>
+            <div class="chat-info">
+              <div class="name">${name}</div>
+              <div class="last-message">${lastMessage}</div>
+            </div>
+          `;
+          chatList.appendChild(chatItem);
         });
-      } catch (error) {
-        document.getElementById('messages-container').textContent = "Error al cargar mensajes: " + error;
+      } catch (err) {
+        console.error(err);
       }
     }
 
-    // Función para enviar un mensaje
-    document.getElementById('send-message-form').addEventListener('submit', async function(e) {
-      e.preventDefault();
-      const sender_id = document.getElementById('sender_id').value;
-      const chat_id = document.getElementById('current_chat_id').value;
-      const content = document.getElementById('message_content').value;
-      
-      const payload = { sender_id, chat_id, content };
+    // Seleccionar un chat y cargar sus mensajes (usando el servicio de mensajes en el puerto 5003)
+    async function selectChat(chatId, chatName) {
+      currentChatId = chatId;
+      document.getElementById('chatHeader').textContent = chatName;
+      await loadMessages(chatId);
+    }
+
+    // Cargar los mensajes de un chat
+    async function loadMessages(chatId) {
       try {
-        const response = await fetch('http://localhost:5003/message', {
+        const res = await fetch(`http://localhost:5003/chat/${chatId}/messages`);
+        const messages = await res.json();
+        const chatMessages = document.getElementById('chatMessages');
+        chatMessages.innerHTML = '';
+        if(messages.error) {
+          chatMessages.innerHTML = `<div class="error">${messages.error}</div>`;
+          return;
+        }
+        messages.forEach(msg => {
+          // Definir si el mensaje es entrante u saliente según sender_id
+          const type = msg.sender_id == userId ? 'outgoing' : 'incoming';
+          addMessageToUI(type, msg.content, msg.timestamp);
+        });
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    // Agregar un mensaje a la interfaz
+    function addMessageToUI(type, text, time) {
+      const chatMessages = document.getElementById('chatMessages');
+      const messageDiv = document.createElement('div');
+      messageDiv.className = 'message ' + (type === 'outgoing' ? 'outgoing' : 'incoming');
+
+      const bubbleDiv = document.createElement('div');
+      bubbleDiv.className = 'bubble';
+      bubbleDiv.textContent = text;
+      
+      const timeSpan = document.createElement('span');
+      timeSpan.className = 'time';
+      // Se formatea el timestamp
+      timeSpan.textContent = new Date(time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+
+      if (type === 'outgoing') {
+        messageDiv.appendChild(timeSpan);
+        messageDiv.appendChild(bubbleDiv);
+      } else {
+        messageDiv.appendChild(bubbleDiv);
+        messageDiv.appendChild(timeSpan);
+      }
+      chatMessages.appendChild(messageDiv);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    // Enviar un mensaje (a través del servicio de mensajes en el puerto 5003)
+    async function sendMessage() {
+      const input = document.getElementById('messageInput');
+      const text = input.value.trim();
+      if (!text || !currentChatId) return;
+      const payload = {
+        sender_id: userId,
+        chat_id: currentChatId,
+        content: text
+      };
+      try {
+        const res = await fetch('http://localhost:5003/message', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         });
-        const data = await response.json();
-        document.getElementById('message-result').textContent = "Mensaje enviado: " + JSON.stringify(data);
-        // Recargar mensajes del chat
-        loadMessages(chat_id);
-      } catch (error) {
-        document.getElementById('message-result').textContent = "Error al enviar mensaje: " + error;
+        const result = await res.json();
+        if(result.error) {
+          console.error(result.error);
+        } else {
+          // Actualizar la interfaz: agregar el mensaje y recargar la conversación
+          addMessageToUI('outgoing', text, new Date().toISOString());
+          input.value = '';
+          await loadMessages(currentChatId);
+        }
+      } catch (err) {
+        console.error(err);
       }
-    });
+    }
+
+    // Inicializar: cargar la lista de chats al cargar la página
+    window.onload = loadChats;
   </script>
 </body>
 </html>

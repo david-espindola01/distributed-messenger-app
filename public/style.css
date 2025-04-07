@@ -1,7 +1,7 @@
 /* Estilos generales */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #f0f2f5;
+    background: #fff; /* Fondo blanco para resaltar los elementos */
     margin: 0;
     padding: 0;
     display: flex;
@@ -12,18 +12,19 @@ body {
   
   /* Contenedor central */
   .container {
-    background: #ffffff;
+    background: #fff;
     padding: 2rem;
     border-radius: 10px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     width: 100%;
     max-width: 400px;
+    border: 2px solid #000; /* Borde negro */
   }
   
   /* Títulos */
   h2 {
     text-align: center;
-    color: #333;
+    color: #000; /* Texto negro */
     margin-bottom: 1.5rem;
   }
   
@@ -35,7 +36,7 @@ body {
   .form-group label {
     display: block;
     margin-bottom: 0.5rem;
-    color: #555;
+    color: #000; /* Etiquetas en negro */
   }
   
   /* Inputs */
@@ -43,14 +44,14 @@ body {
   input[type="password"] {
     width: 100%;
     padding: 0.75rem;
-    border: 1px solid #ccc;
+    border: 1px solid #000; /* Borde negro */
     border-radius: 5px;
     transition: border-color 0.3s;
   }
   
   input[type="text"]:focus,
   input[type="password"]:focus {
-    border-color: #007bff;
+    border-color: #ffeb3b; /* Borde amarillo al enfocar */
     outline: none;
   }
   
@@ -58,9 +59,9 @@ body {
   button {
     width: 100%;
     padding: 0.75rem;
-    background: #007bff;
+    background: #ffeb3b; /* Fondo amarillo */
     border: none;
-    color: #fff;
+    color: #000; /* Texto negro */
     border-radius: 5px;
     font-size: 1rem;
     cursor: pointer;
@@ -69,7 +70,7 @@ body {
   }
   
   button:hover {
-    background: #0056b3;
+    background: #fdd835; /* Un amarillo un poco más oscuro en hover */
   }
   
   /* Resultados y errores */
@@ -79,23 +80,24 @@ body {
     font-weight: bold;
   }
   
+  /* Se utiliza negro para el texto de resultados y errores */
   .result {
-    color: green;
+    color: #000;
   }
   
   .error {
-    color: red;
+    color: #000;
   }
   
   /* Enlaces de navegación */
   p {
     text-align: center;
     margin-top: 1rem;
-    color: #333;
+    color: #000;
   }
   
   p a {
-    color: #007bff;
+    color: #ffeb3b; /* Enlace en amarillo */
     text-decoration: none;
     font-weight: bold;
   }
