@@ -41,6 +41,14 @@ class User:
             "chats": [chat.chat_id for chat in self.chats],
             "groupChats": [chat.chat_id for chat in self.groupChats]
         }
+    def to_shallow_dict(self):
+        return {
+            "user_id": self.user_id,
+            "username": self.username,
+            "first_name": self.first_name,
+            "last_name": self.last_name,
+            "is_active": self.is_active,
+        }
 
 class Message:
     def __init__(self, sender, recipient, content):
@@ -54,8 +62,8 @@ class Message:
     
     def to_dict(self):
         return {
-            "sender": self.sender.to_dict() if hasattr(self.sender, "to_dict") else str(self.sender),
-            "recipient": self.recipient.to_dict() if hasattr(self.recipient, "to_dict") else str(self.recipient),
+            "sender": self.sender.to_shallow_dict() if hasattr(self.sender, "to_shallow_dict") else str(self.sender),
+            "recipient": self.recipient.to_shallow_dict() if hasattr(self.recipient, "to_shallow_dict") else str(self.recipient),
             "content": self.content,
             "timestamp": self.timestamp.isoformat() if self.timestamp else None
         }
@@ -88,7 +96,14 @@ class Chat:
             "is_active": self.is_active,
             "created_at": self.created_at.isoformat() if self.created_at else None,
             "updated_at": self.updated_at.isoformat() if self.updated_at else None,
-            "participants": [participant.to_dict() for participant in self.participants],
-            "admin": [admin.to_dict() for admin in self.admin],
-            "messages": [message.to_dict() for message in self.messages]
+            "participants": [p.to_shallow_dict() for p in self.participants],
+            "admin": [a.to_shallow_dict() for a in self.admin],
+            "messages": [m.to_dict() for m in self.messages]
+        }
+    
+    def to_shallow_dict(self):
+        return {
+            "chat_id": self.chat_id,
+            "name": self.name,
+            "is_active": self.is_active,
         }
