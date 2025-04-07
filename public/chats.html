@@ -410,6 +410,11 @@
 
     // Inicializar: cargar la lista de chats al cargar la página
     window.onload = loadChats;
+    setInterval(() => {
+      if (currentChatId) {
+        loadMessages(currentChatId);
+      }
+    }, 300);
   </script>
 </body>
 </html>
