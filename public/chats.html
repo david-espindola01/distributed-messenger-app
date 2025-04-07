@@ -209,6 +209,18 @@
       font-weight: bold;
       cursor: pointer;
     }
+    #logout-btn {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      padding: 8px 16px;
+      background-color: #f44336;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
@@ -216,6 +228,7 @@
     <!-- Sidebar: lista de chats -->
     <div class="sidebar">
       <div class="sidebar-header">UPTC MESSENGER</div>
+      <button id="logout-btn" onclick="logout()">Cerrar sesión</button>
       <div class="chat-list" id="chatList">
         <!-- Los chats se cargarán aquí dinámicamente -->
       </div>
@@ -250,12 +263,37 @@
   </div>
 
   <script>
-    const params = new URLSearchParams(window.location.search);
-    const userId = params.get('user_id') || localStorage.getItem('user_id') || '1'; 
+    //const params = new URLSearchParams(window.location.search);
+    //const userId = params.get('user_id') || localStorage.getItem('user_id') || '1'; 
+    function getCookie(name) {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop().split(';').shift();
+      return null;
+    }
 
+    // Verificar que la cookie auth_token sea válida
+    const authToken = getCookie('auth_token');
+    if (authToken !== 'valid') {
+      alert('Acceso no autorizado. Redirigiendo al login...');
+      window.location.href = 'login.html';
+    }
 
+    // Obtener el user_id de la cookie
+    const userId = getCookie('user_id');
+    if (!userId) {
+      alert('No se encontró el ID del usuario. Redirigiendo al login...');
+      window.location.href = 'login.html';
+    } // Si no existe, asigna '1' como valor predeterminado
     let currentChatId = null;
+    function deleteCookie(name) {
+      document.cookie = name + '=; Max-Age=0; path=/;';
+    }
 
+    function logout() {
+      deleteCookie('user_id');
+      window.location.href = 'login.html';
+    }
     async function loadChats() {
       try {
         const res = await fetch(`http://localhost:5002/user/${userId}/chats`);
