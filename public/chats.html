@@ -313,22 +313,27 @@
       
       socket.onmessage = function(event) {
         try {
+          // Intenta parsear el mensaje recibido
           const messageData = JSON.parse(event.data);
-          console.log("Mensaje recibido por WebSocket:", messageData);
-          console.log("Chat activo:", currentChatId);
-          
-          if (messageData.chat_id == currentChatId) {
-            const type = String(messageData.sender_id).trim() === String(userId).trim() ? 'outgoing' : 'incoming';
-            console.log("Mostrando mensaje en chat activo");
+          console.log("onmessage: Mensaje recibido:", messageData);
+          console.log("onmessage: chat_id del mensaje:", messageData.chat_id);
+          console.log("onmessage: currentChatId:", currentChatId);
+
+          // Asegurarse de comparar ambos valores en el mismo tipo (cadena)
+          if (String(messageData.chat_id) === String(currentChatId)) {
+            // Determinar el tipo: si el sender_id coincide con el user_id, es mensaje saliente; de lo contrario, entrante.
+            const type = (String(messageData.sender_id).trim() === String(userId).trim()) ? 'outgoing' : 'incoming';
+            console.log("onmessage: Mensaje corresponde al chat activo. Tipo:", type);
             addMessageToUI(type, messageData.content, messageData.timestamp);
           } else {
-            console.log("Mensaje para otro chat. Actualizando lista de chats.");
+            console.log("onmessage: Mensaje recibido para otro chat. Se actualiza la lista de chats.");
             loadChats();
           }
         } catch (e) {
-          console.error("Error al procesar el mensaje WebSocket:", e);
+          console.error("onmessage: Error al procesar el mensaje:", e);
         }
       };
+
 
 
 
@@ -438,9 +443,20 @@
       const payload = {
         sender_id: userId,
         chat_id: currentChatId,
-        content: text
+        content: text,
+        timestamp: new Date().toISOString()
       };
+      
       try {
+        // Envía el mensaje vía WebSocket
+        if (socket && socket.readyState === WebSocket.OPEN) {
+          socket.send(JSON.stringify(payload));
+          console.log("Mensaje enviado vía WebSocket:", payload);
+        } else {
+          console.warn("Socket no disponible");
+        }
+
+        // Persiste el mensaje en el servidor vía HTTP
         const res = await fetch('http://localhost:5003/message', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -448,16 +464,18 @@
         });
         const result = await res.json();
         if(result.error) {
-          console.error(result.error);
+          console.error("Error al guardar el mensaje:", result.error);
         } else {
-          addMessageToUI('outgoing', text, new Date().toISOString());
+          console.log("Mensaje guardado correctamente");
+          // No se añade el mensaje aquí; se espera a que se reciba por el WebSocket
           input.value = '';
-          // Como el mensaje se difundirá vía WebSocket, no es necesario recargar los mensajes
         }
       } catch (err) {
-        console.error(err);
+        console.error("sendMessage: Error:", err);
       }
     }
+
+
 
     /* Funciones para el modal de crear chat */
     function openCreateChatModal() {
