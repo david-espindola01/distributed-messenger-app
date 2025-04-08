@@ -5,228 +5,258 @@
   <title>UPTC MESSENGER</title>
   <style>
     /* Reset y estilos base */
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      background-color: #ece5dd;
-      overflow: hidden;
-    }
-    /* Contenedor principal con dos columnas */
-    .chat-container {
-      display: flex;
-      height: 100vh;
-    }
-    /* Sidebar (lista de chats) */
-    .sidebar {
-      width: 30%;
-      background-color: #fff;
-      border-right: 1px solid #ddd;
-      display: flex;
-      flex-direction: column;
-    }
-    .sidebar-header {
-      background-color: #075e54;
-      color: #fff;
-      padding: 15px;
-      font-size: 18px;
-      font-weight: bold;
-      text-align: center;
-    }
-    .chat-list {
-      flex: 1;
-      overflow-y: auto;
-    }
-    .chat-item {
-      display: flex;
-      align-items: center;
-      padding: 15px;
-      border-bottom: 1px solid #f0f0f0;
-      cursor: pointer;
-    }
-    .chat-item:hover { background-color: #f5f5f5; }
-    .chat-item .avatar {
-      width: 45px;
-      height: 45px;
-      border-radius: 50%;
-      background-color: #ccc;
-      margin-right: 15px;
-      flex-shrink: 0;
-    }
-    .chat-item .chat-info {
-      flex: 1;
-    }
-    .chat-item .chat-info .name {
-      font-weight: bold;
-      font-size: 16px;
-      margin-bottom: 5px;
-    }
-    .chat-item .chat-info .last-message {
-      font-size: 14px;
-      color: #888;
-    }
-    /* Área de conversación */
-    .chat-window {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      background-color: #e5ddd5;
-    }
-    .chat-header {
-      background-color: #075e54;
-      color: #fff;
-      padding: 15px;
-      font-size: 18px;
-      font-weight: bold;
-      text-align: center;
-    }
-    .chat-messages {
-      flex: 1;
-      padding: 15px;
-      overflow-y: auto;
-    }
-    .message {
-      margin-bottom: 15px;
-      display: flex;
-      align-items: flex-end;
-    }
-    .message.incoming .bubble {
-      background-color: #fff;
-      color: #000;
-      border: 1px solid #ddd;
-      border-radius: 7.5px;
-      padding: 10px 15px;
-      max-width: 60%;
-    }
-    .message.outgoing {
-      justify-content: flex-end;
-    }
-    .message.outgoing .bubble {
-      background-color: #dcf8c6;
-      color: #000;
-      border-radius: 7.5px;
-      padding: 10px 15px;
-      max-width: 60%;
-    }
-    .message .time {
-      font-size: 10px;
-      color: #888;
-      margin: 0 5px;
-      align-self: flex-end;
-    }
-    /* Área de entrada */
-    .chat-input {
-      display: flex;
-      padding: 10px;
-      background-color: #f0f0f0;
-    }
-    .chat-input input {
-      flex: 1;
-      padding: 10px;
-      border: none;
-      border-radius: 20px;
-      outline: none;
-      font-size: 16px;
-    }
-    .chat-input button {
-      background-color: #075e54;
-      color: #fff;
-      border: none;
-      padding: 10px 15px;
-      margin-left: 10px;
-      border-radius: 20px;
-      cursor: pointer;
-      font-size: 16px;
-    }
-    /* Mensajes de error o información */
-    .info { text-align: center; margin: 10px; font-weight: bold; }
-    .error { color: red; text-align: center; margin: 10px; }
+  *{ box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Cambiado a la fuente del login */
+    background-color: #fff; /* Fondo blanco */
+    overflow: hidden;
+  }
 
-    /* Botón flotante para crear chat */
-    #createChatBtn {
-      position: fixed;
-      bottom: 20px;
-      left: 20px; /* Ajustado para que aparezca a la izquierda */
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      background-color: #075e54;
-      color: #fff;
-      font-size: 36px;
-      border: none;
-      cursor: pointer;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-      z-index: 10;
-    }
+  /* Contenedor principal con dos columnas */
+  .chat-container {
+    display: flex;
+    height: 100vh;
+  }
 
+  /* Sidebar (lista de chats) */
+  .sidebar {
+    width: 30%;
+    background-color: #fff; /* Fondo blanco para la sidebar */
+    border-right: 1px solid #ddd;
+    display: flex;
+    flex-direction: column;
+  }
 
-    /* Modal para crear chat */
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 100;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      overflow: auto;
-      background-color: rgba(0,0,0,0.4);
-    }
-    .modal-content {
-      background-color: #fefefe;
-      margin: 15% auto;
-      padding: 20px;
-      border: 1px solid #888;
-      width: 80%;
-      max-width: 400px;
-      border-radius: 10px;
-    }
-    .modal-content h2 {
-      margin-bottom: 15px;
-    }
-    .modal-content label {
-      display: block;
-      margin: 10px 0 5px;
-    }
-    .modal-content input {
-      width: 100%;
-      padding: 8px;
-      margin-bottom: 10px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-    .modal-content button {
-      background-color: #075e54;
-      color: #fff;
-      border: none;
-      padding: 10px;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    .close {
-      color: #aaa;
-      float: right;
-      font-size: 28px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    #logout-btn {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      padding: 8px 16px;
-      background-color: #f44336;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-    .chat-participants {
-      font-size: 14px;
-      color: #fff;
-      margin-top: 5px;
-    }
+  .sidebar-header {
+    background-color: #ffeb3b; /* Color de encabezado amarillo */
+    color: #000; /* Texto negro */
+    padding: 15px;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+  }
 
+  .chat-list {
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  .chat-item {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    border-bottom: 1px solid #f0f0f0;
+    cursor: pointer;
+  }
+
+  .chat-item:hover { background-color: #fdd835; } /* Color de fondo al pasar el mouse */
+  .chat-item .avatar {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background-color: #ccc;
+    margin-right: 15px;
+    flex-shrink: 0;
+  }
+
+  .chat-item .chat-info {
+    flex: 1;
+  }
+
+  .chat-item .chat-info .name {
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 5px;
+    color: #000; /* Texto negro */
+  }
+
+  .chat-item .chat-info .last-message {
+    font-size: 14px;
+    color: #888;
+  }
+
+  /* Área de conversación */
+  .chat-window {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: #e5ddd5; /* Color de fondo de la ventana de chat */
+  }
+
+  .chat-header {
+    background-color: #ffeb3b; /* Color de encabezado amarillo */
+    color: #000; /* Texto negro */
+    padding: 15px;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+  }
+
+  .chat-messages {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+  }
+
+  .message {
+    margin-bottom: 15px;
+    display: flex;
+    align-items: flex-end;
+  }
+
+  .message.incoming .bubble {
+    background-color: #fff; /* Color de burbuja de mensaje entrante */
+    color: #000; /* Texto negro */
+    border: 1px solid #ddd;
+    border-radius: 7.5px;
+    padding: 10px 15px;
+    max-width: 60%;
+  }
+
+  .message.outgoing {
+    justify-content: flex-end;
+  }
+
+  .message.outgoing .bubble {
+    background-color: #ffeb3b; /* Color de burbuja de mensaje saliente */
+    color: #000; /* Texto negro */
+    border-radius: 7.5px;
+    padding: 10px 15px;
+    max-width: 60%;
+  }
+
+  .message .time {
+    font-size: 10px;
+    color: #888;
+    margin: 0 5px;
+    align-self: flex-end;
+  }
+
+  /* Área de entrada */
+  .chat-input {
+    display: flex;
+    padding: 10px;
+    background-color: #f0f0f0; /* Color de fondo del área de entrada */
+  }
+
+  .chat-input input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #000; /* Borde negro */
+    border-radius: 20px;
+    outline: none;
+    font-size: 16px;
+  }
+
+  .chat-input button {
+    background-color: #ffeb3b; /* Fondo amarillo */
+    color: #000; /* Texto negro */
+    border: none;
+    padding: 10px 15px;
+    margin-left: 10px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+
+  /* Mensajes de error o información */
+  .info { text-align: center; margin: 10px; font-weight: bold; }
+  .error { color: red; text-align: center; margin: 10px; }
+
+  /* Botón flotante para crear chat */
+  #createChatBtn {
+    position: fixed;
+    bottom: 20px;
+    left: 20px; /* Ajustado para que aparezca a la izquierda */
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: #ffeb3b; /* Color del botón flotante */
+    color: #000; /* Texto negro */
+    font-size: 36px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    z-index: 10;
+  }
+
+  /* Modal para crear chat */
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 100;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+  }
+
+  .modal-content {
+    background-color: #fff; /* Fondo blanco para el modal */
+    margin: 15% auto;
+    padding: 20px;
+    border: 2px solid #000; /* Borde negro */
+    width: 80%;
+    max-width: 400px;
+    border-radius: 10px;
+  }
+
+  .modal-content h2 {
+    margin-bottom: 15px;
+    color: #000; /* Texto negro */
+  }
+
+  .modal-content label {
+    display: block;
+    margin: 10px 0 5px;
+    color: #000; /* Etiquetas en negro */
+  }
+
+  .modal-content input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #000; /* Borde negro */
+    border-radius: 4px;
+  }
+
+  .modal-content button {
+    background-color: #ffeb3b; /* Color del botón en el modal */
+    color: #000; /* Texto negro */
+    border: none;
+    padding: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  #logout-btn {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    padding: 8px 16px;
+    background-color: #f44336; /* Color del botón de cerrar sesión */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+
+  .chat-participants {
+    font-size: 14px;
+    color: #000; /* Texto negro */
+    margin-top: 5px;
+  }
   </style>
 </head>
 <body>
