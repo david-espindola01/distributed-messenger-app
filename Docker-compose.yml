@@ -61,3 +61,17 @@ services:
       - ./schema.sql:/app/schema.sql
     environment:
       - PYTHONUNBUFFERED=1
+  websocket:
+    build:
+      context: ./services/websocket
+      dockerfile: Dockerfile
+    container_name: websocket_service
+    ports:
+      - "5004:5000"                     # Se usa un puerto distinto para evitar conflictos
+    volumes:
+      - ./database:/app/database       # Si este servicio también necesita acceso a la DB
+      - ./models:/app/models
+      - ./controllers:/app/controllers
+      - ./schema.sql:/app/schema.sql
+    environment:
+      - PYTHONUNBUFFERED=1

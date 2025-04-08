@@ -5,258 +5,227 @@
   <title>UPTC MESSENGER</title>
   <style>
     /* Reset y estilos base */
-  *{ box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Cambiado a la fuente del login */
-    background-color: #fff; /* Fondo blanco */
-    overflow: hidden;
-  }
-
-  /* Contenedor principal con dos columnas */
-  .chat-container {
-    display: flex;
-    height: 100vh;
-  }
-
-  /* Sidebar (lista de chats) */
-  .sidebar {
-    width: 30%;
-    background-color: #fff; /* Fondo blanco para la sidebar */
-    border-right: 1px solid #ddd;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .sidebar-header {
-    background-color: #ffeb3b; /* Color de encabezado amarillo */
-    color: #000; /* Texto negro */
-    padding: 15px;
-    font-size: 18px;
-    font-weight: bold;
-    text-align: center;
-  }
-
-  .chat-list {
-    flex: 1;
-    overflow-y: auto;
-  }
-
-  .chat-item {
-    display: flex;
-    align-items: center;
-    padding: 15px;
-    border-bottom: 1px solid #f0f0f0;
-    cursor: pointer;
-  }
-
-  .chat-item:hover { background-color: #fdd835; } /* Color de fondo al pasar el mouse */
-  .chat-item .avatar {
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;
-    background-color: #ccc;
-    margin-right: 15px;
-    flex-shrink: 0;
-  }
-
-  .chat-item .chat-info {
-    flex: 1;
-  }
-
-  .chat-item .chat-info .name {
-    font-weight: bold;
-    font-size: 16px;
-    margin-bottom: 5px;
-    color: #000; /* Texto negro */
-  }
-
-  .chat-item .chat-info .last-message {
-    font-size: 14px;
-    color: #888;
-  }
-
-  /* Área de conversación */
-  .chat-window {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    background-color: #e5ddd5; /* Color de fondo de la ventana de chat */
-  }
-
-  .chat-header {
-    background-color: #ffeb3b; /* Color de encabezado amarillo */
-    color: #000; /* Texto negro */
-    padding: 15px;
-    font-size: 18px;
-    font-weight: bold;
-    text-align: center;
-  }
-
-  .chat-messages {
-    flex: 1;
-    padding: 15px;
-    overflow-y: auto;
-  }
-
-  .message {
-    margin-bottom: 15px;
-    display: flex;
-    align-items: flex-end;
-  }
-
-  .message.incoming .bubble {
-    background-color: #fff; /* Color de burbuja de mensaje entrante */
-    color: #000; /* Texto negro */
-    border: 1px solid #ddd;
-    border-radius: 7.5px;
-    padding: 10px 15px;
-    max-width: 60%;
-  }
-
-  .message.outgoing {
-    justify-content: flex-end;
-  }
-
-  .message.outgoing .bubble {
-    background-color: #ffeb3b; /* Color de burbuja de mensaje saliente */
-    color: #000; /* Texto negro */
-    border-radius: 7.5px;
-    padding: 10px 15px;
-    max-width: 60%;
-  }
-
-  .message .time {
-    font-size: 10px;
-    color: #888;
-    margin: 0 5px;
-    align-self: flex-end;
-  }
-
-  /* Área de entrada */
-  .chat-input {
-    display: flex;
-    padding: 10px;
-    background-color: #f0f0f0; /* Color de fondo del área de entrada */
-  }
-
-  .chat-input input {
-    flex: 1;
-    padding: 10px;
-    border: 1px solid #000; /* Borde negro */
-    border-radius: 20px;
-    outline: none;
-    font-size: 16px;
-  }
-
-  .chat-input button {
-    background-color: #ffeb3b; /* Fondo amarillo */
-    color: #000; /* Texto negro */
-    border: none;
-    padding: 10px 15px;
-    margin-left: 10px;
-    border-radius: 20px;
-    cursor: pointer;
-    font-size: 16px;
-  }
-
-  /* Mensajes de error o información */
-  .info { text-align: center; margin: 10px; font-weight: bold; }
-  .error { color: red; text-align: center; margin: 10px; }
-
-  /* Botón flotante para crear chat */
-  #createChatBtn {
-    position: fixed;
-    bottom: 20px;
-    left: 20px; /* Ajustado para que aparezca a la izquierda */
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    background-color: #ffeb3b; /* Color del botón flotante */
-    color: #000; /* Texto negro */
-    font-size: 36px;
-    border: none;
-    cursor: pointer;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-    z-index: 10;
-  }
-
-  /* Modal para crear chat */
-  .modal {
-    display: none;
-    position: fixed;
-    z-index: 100;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0,0,0,0.4);
-  }
-
-  .modal-content {
-    background-color: #fff; /* Fondo blanco para el modal */
-    margin: 15% auto;
-    padding: 20px;
-    border: 2px solid #000; /* Borde negro */
-    width: 80%;
-    max-width: 400px;
-    border-radius: 10px;
-  }
-
-  .modal-content h2 {
-    margin-bottom: 15px;
-    color: #000; /* Texto negro */
-  }
-
-  .modal-content label {
-    display: block;
-    margin: 10px 0 5px;
-    color: #000; /* Etiquetas en negro */
-  }
-
-  .modal-content input {
-    width: 100%;
-    padding: 8px;
-    margin-bottom: 10px;
-    border: 1px solid #000; /* Borde negro */
-    border-radius: 4px;
-  }
-
-  .modal-content button {
-    background-color: #ffeb3b; /* Color del botón en el modal */
-    color: #000; /* Texto negro */
-    border: none;
-    padding: 10px;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-
-  .close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
-  }
-
-  #logout-btn {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    padding: 8px 16px;
-    background-color: #f44336; /* Color del botón de cerrar sesión */
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: bold;
-  }
-
-  .chat-participants {
-    font-size: 14px;
-    color: #000; /* Texto negro */
-    margin-top: 5px;
-  }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #fff;
+      overflow: hidden;
+    }
+    /* Contenedor principal con dos columnas */
+    .chat-container {
+      display: flex;
+      height: 100vh;
+    }
+    /* Sidebar (lista de chats) */
+    .sidebar {
+      width: 30%;
+      background-color: #fff;
+      border-right: 1px solid #ddd;
+      display: flex;
+      flex-direction: column;
+    }
+    .sidebar-header {
+      background-color: #ffeb3b;
+      color: #000;
+      padding: 15px;
+      font-size: 18px;
+      font-weight: bold;
+      text-align: center;
+    }
+    .chat-list {
+      flex: 1;
+      overflow-y: auto;
+    }
+    .chat-item {
+      display: flex;
+      align-items: center;
+      padding: 15px;
+      border-bottom: 1px solid #f0f0f0;
+      cursor: pointer;
+    }
+    .chat-item:hover { background-color: #fdd835; }
+    .chat-item .avatar {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      background-color: #ccc;
+      margin-right: 15px;
+      flex-shrink: 0;
+    }
+    .chat-item .chat-info {
+      flex: 1;
+    }
+    .chat-item .chat-info .name {
+      font-weight: bold;
+      font-size: 16px;
+      margin-bottom: 5px;
+      color: #000;
+    }
+    .chat-item .chat-info .last-message {
+      font-size: 14px;
+      color: #888;
+    }
+    /* Área de conversación */
+    .chat-window {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background-color: #e5ddd5;
+    }
+    .chat-header {
+      background-color: #ffeb3b;
+      color: #000;
+      padding: 15px;
+      font-size: 18px;
+      font-weight: bold;
+      text-align: center;
+    }
+    .chat-messages {
+      flex: 1;
+      padding: 15px;
+      overflow-y: auto;
+    }
+    .message {
+      margin-bottom: 15px;
+      display: flex;
+      align-items: flex-end;
+    }
+    .message.incoming .bubble {
+      background-color: #fff;
+      color: #000;
+      border: 1px solid #ddd;
+      border-radius: 7.5px;
+      padding: 10px 15px;
+      max-width: 60%;
+    }
+    .message.outgoing {
+      justify-content: flex-end;
+    }
+    .message.outgoing .bubble {
+      background-color: #ffeb3b;
+      color: #000;
+      border-radius: 7.5px;
+      padding: 10px 15px;
+      max-width: 60%;
+    }
+    .message .time {
+      font-size: 10px;
+      color: #888;
+      margin: 0 5px;
+      align-self: flex-end;
+    }
+    /* Área de entrada */
+    .chat-input {
+      display: flex;
+      padding: 10px;
+      background-color: #f0f0f0;
+    }
+    .chat-input input {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #000;
+      border-radius: 20px;
+      outline: none;
+      font-size: 16px;
+    }
+    .chat-input button {
+      background-color: #ffeb3b;
+      color: #000;
+      border: none;
+      padding: 10px 15px;
+      margin-left: 10px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    /* Mensajes de error o información */
+    .info { text-align: center; margin: 10px; font-weight: bold; }
+    .error { color: red; text-align: center; margin: 10px; }
+    /* Botón flotante para crear chat */
+    #createChatBtn {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background-color: #ffeb3b;
+      color: #000;
+      font-size: 36px;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+      z-index: 10;
+    }
+    /* Modal para crear chat */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 100;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.4);
+    }
+    .modal-content {
+      background-color: #fff;
+      margin: 15% auto;
+      padding: 20px;
+      border: 2px solid #000;
+      width: 80%;
+      max-width: 400px;
+      border-radius: 10px;
+    }
+    .modal-content h2 {
+      margin-bottom: 15px;
+      color: #000;
+    }
+    .modal-content label {
+      display: block;
+      margin: 10px 0 5px;
+      color: #000;
+    }
+    .modal-content input {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+      border: 1px solid #000;
+      border-radius: 4px;
+    }
+    .modal-content button {
+      background-color: #ffeb3b;
+      color: #000;
+      border: none;
+      padding: 10px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    #logout-btn {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      padding: 8px 16px;
+      background-color: #f44336;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .chat-participants {
+      font-size: 14px;
+      color: #000;
+      margin-top: 5px;
+    }
   </style>
 </head>
 <body>
@@ -299,8 +268,7 @@
   </div>
 
   <script>
-    //const params = new URLSearchParams(window.location.search);
-    //const userId = params.get('user_id') || localStorage.getItem('user_id') || '1'; 
+    // Obtener valor de una cookie
     function getCookie(name) {
       const value = `; ${document.cookie}`;
       const parts = value.split(`; ${name}=`);
@@ -308,7 +276,7 @@
       return null;
     }
 
-    // Verificar que la cookie auth_token sea válida
+    // Verificar la cookie auth_token
     const authToken = getCookie('auth_token');
     if (authToken !== 'valid') {
       alert('Acceso no autorizado. Redirigiendo al login...');
@@ -320,8 +288,11 @@
     if (!userId) {
       alert('No se encontró el ID del usuario. Redirigiendo al login...');
       window.location.href = 'login.html';
-    } // Si no existe, asigna '1' como valor predeterminado
+    }
+
     let currentChatId = null;
+    let socket;
+
     function deleteCookie(name) {
       document.cookie = name + '=; Max-Age=0; path=/;';
     }
@@ -330,6 +301,42 @@
       deleteCookie('user_id');
       window.location.href = 'login.html';
     }
+
+    // Inicializar WebSocket para recibir mensajes en tiempo real
+    function initializeWebSocket() {
+      // Conecta al WebSocket (ajusta la URL y el puerto según tu configuración)
+      socket = new WebSocket("ws://localhost:5004/ws?user_id=" + userId);
+
+      socket.onopen = function() {
+        console.log("Conexión WebSocket establecida.");
+      };
+
+      socket.onmessage = function(event) {
+        try {
+          const messageData = JSON.parse(event.data);
+          console.log("Mensaje recibido por WebSocket:", messageData);
+          // Si el mensaje corresponde al chat actualmente seleccionado, actualiza la interfaz
+          if (messageData.chat_id == currentChatId) {
+            const type = String(messageData.sender_id).trim() === String(userId).trim() ? 'outgoing' : 'incoming';
+            addMessageToUI(type, messageData.content, messageData.timestamp);
+          }
+        } catch (e) {
+          console.error("Error al procesar el mensaje WebSocket:", e);
+        }
+      };
+
+      socket.onerror = function(error) {
+        console.error("Error en WebSocket:", error);
+      };
+
+      socket.onclose = function() {
+        console.log("WebSocket cerrado. Reintentando conexión en 2 segundos...");
+        // Reintentar conexión después de 2 segundos
+        setTimeout(initializeWebSocket, 2000);
+      };
+    }
+
+    // Cargar la lista de chats del usuario
     async function loadChats() {
       try {
         const res = await fetch(`http://localhost:5002/user/${userId}/chats`);
@@ -341,12 +348,10 @@
           return;
         }
         chats.forEach(chat => {
-          // Usa el nombre del chat o el primer participante según tu lógica
           const name = chat.name || (chat.participants && chat.participants[0] && chat.participants[0].first_name) || 'Chat';
           const lastMessage = chat.last_message || '';
           const chatItem = document.createElement('div');
           chatItem.className = 'chat-item';
-          // Aquí se pasa el objeto "chat" completo al hacer click
           chatItem.onclick = () => selectChat(chat);
           chatItem.innerHTML = `
             <div class="avatar"></div>
@@ -362,13 +367,10 @@
       }
     }
 
-
-    // Seleccionar un chat y cargar sus mensajes (usando el servicio de mensajes en el puerto 5003)
+    // Seleccionar un chat y cargar sus mensajes
     async function selectChat(chat) {
       currentChatId = chat.chat_id;
-      // Extraer los usernames de los participantes y unirlos en un string
       const participants = chat.participants.map(user => user.username).join(', ');
-      // Actualizar la cabecera: se muestra el nombre del chat y, debajo, los participantes
       document.getElementById('chatHeader').innerHTML = `
         <div>${chat.name || 'Chat'}</div>
         <div class="chat-participants" style="font-size: 14px; color: #fff; margin-top: 5px;">
@@ -376,7 +378,6 @@
         </div>`;
       await loadMessages(chat.chat_id);
     }
-
 
     // Cargar los mensajes de un chat
     async function loadMessages(chatId) {
@@ -390,11 +391,7 @@
           return;
         }
         messages.forEach(msg => {
-          // Depuración: mostrar los valores comparados en consola
-          console.log('userId:', userId.trim(), 'msg.sender_id:', String(msg.sender_id).trim());
-          
-          // Convertir ambos valores a cadena y quitar espacios en blanco
-          const type = String(msg.sender_id).trim() === userId.trim() ? 'outgoing' : 'incoming';
+          const type = String(msg.sender_id).trim() === String(userId).trim() ? 'outgoing' : 'incoming';
           addMessageToUI(type, msg.content, msg.timestamp);
         });
       } catch (err) {
@@ -412,7 +409,6 @@
       bubbleDiv.textContent = text;
       const timeSpan = document.createElement('span');
       timeSpan.className = 'time';
-      // Formatear el timestamp
       timeSpan.textContent = new Date(time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
       
       if (type === 'outgoing') {
@@ -427,8 +423,7 @@
       chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
-
-    // Enviar un mensaje (a través del servicio de mensajes en el puerto 5003)
+    // Enviar un mensaje
     async function sendMessage() {
       const input = document.getElementById('messageInput');
       const text = input.value.trim();
@@ -448,10 +443,9 @@
         if(result.error) {
           console.error(result.error);
         } else {
-          // Actualizar la interfaz: agregar el mensaje y recargar la conversación
           addMessageToUI('outgoing', text, new Date().toISOString());
           input.value = '';
-          await loadMessages(currentChatId);
+          // Como el mensaje se difundirá vía WebSocket, no es necesario recargar los mensajes
         }
       } catch (err) {
         console.error(err);
@@ -462,11 +456,9 @@
     function openCreateChatModal() {
       document.getElementById("createChatModal").style.display = "block";
     }
-
     function closeCreateChatModal() {
       document.getElementById("createChatModal").style.display = "none";
     }
-
     async function createChat() {
       const chatName = document.getElementById("chatName").value;
       const participantIdsString = document.getElementById("participantIds").value;
@@ -491,7 +483,6 @@
         } else {
           alert("Chat creado exitosamente!");
           closeCreateChatModal();
-          // Actualizar la lista de chats
           loadChats();
         }
       } catch (err) {
@@ -499,13 +490,11 @@
       }
     }
 
-    // Inicializar: cargar la lista de chats al cargar la página
-    window.onload = loadChats;
-    setInterval(() => {
-      if (currentChatId) {
-        loadMessages(currentChatId);
-      }
-    }, 300);
+    // Inicialización al cargar la página: carga la lista de chats y establece el WebSocket
+    window.onload = function() {
+      loadChats();
+      initializeWebSocket();
+    }
   </script>
 </body>
 </html>
