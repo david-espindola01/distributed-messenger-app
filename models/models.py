@@ -62,11 +62,13 @@ class Message:
     
     def to_dict(self):
         return {
+            "sender_id": self.sender.user_id,  # Agregamos esta propiedad para facilitar la comparación en el frontend
             "sender": self.sender.to_shallow_dict() if hasattr(self.sender, "to_shallow_dict") else str(self.sender),
             "recipient": self.recipient.to_shallow_dict() if hasattr(self.recipient, "to_shallow_dict") else str(self.recipient),
             "content": self.content,
             "timestamp": self.timestamp.isoformat() if self.timestamp else None
         }
+
 
 class Chat:
     def __init__(self, participants):

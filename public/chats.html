@@ -221,6 +221,12 @@
       cursor: pointer;
       font-weight: bold;
     }
+    .chat-participants {
+      font-size: 14px;
+      color: #fff;
+      margin-top: 5px;
+    }
+
   </style>
 </head>
 <body>
@@ -300,7 +306,7 @@
         const chats = await res.json();
         const chatList = document.getElementById('chatList');
         chatList.innerHTML = '';
-        if(chats.error) {
+        if (chats.error) {
           chatList.innerHTML = `<div class="error">${chats.error}</div>`;
           return;
         }
@@ -310,7 +316,8 @@
           const lastMessage = chat.last_message || '';
           const chatItem = document.createElement('div');
           chatItem.className = 'chat-item';
-          chatItem.onclick = () => selectChat(chat.chat_id, name);
+          // Aquí se pasa el objeto "chat" completo al hacer click
+          chatItem.onclick = () => selectChat(chat);
           chatItem.innerHTML = `
             <div class="avatar"></div>
             <div class="chat-info">
@@ -325,12 +332,21 @@
       }
     }
 
+
     // Seleccionar un chat y cargar sus mensajes (usando el servicio de mensajes en el puerto 5003)
-    async function selectChat(chatId, chatName) {
-      currentChatId = chatId;
-      document.getElementById('chatHeader').textContent = chatName;
-      await loadMessages(chatId);
+    async function selectChat(chat) {
+      currentChatId = chat.chat_id;
+      // Extraer los usernames de los participantes y unirlos en un string
+      const participants = chat.participants.map(user => user.username).join(', ');
+      // Actualizar la cabecera: se muestra el nombre del chat y, debajo, los participantes
+      document.getElementById('chatHeader').innerHTML = `
+        <div>${chat.name || 'Chat'}</div>
+        <div class="chat-participants" style="font-size: 14px; color: #fff; margin-top: 5px;">
+          Participantes: ${participants}
+        </div>`;
+      await loadMessages(chat.chat_id);
     }
+
 
     // Cargar los mensajes de un chat
     async function loadMessages(chatId) {
@@ -339,13 +355,16 @@
         const messages = await res.json();
         const chatMessages = document.getElementById('chatMessages');
         chatMessages.innerHTML = '';
-        if(messages.error) {
+        if (messages.error) {
           chatMessages.innerHTML = `<div class="error">${messages.error}</div>`;
           return;
         }
         messages.forEach(msg => {
-          // Definir si el mensaje es entrante u saliente según sender_id
-          const type = msg.sender_id == userId ? 'outgoing' : 'incoming';
+          // Depuración: mostrar los valores comparados en consola
+          console.log('userId:', userId.trim(), 'msg.sender_id:', String(msg.sender_id).trim());
+          
+          // Convertir ambos valores a cadena y quitar espacios en blanco
+          const type = String(msg.sender_id).trim() === userId.trim() ? 'outgoing' : 'incoming';
           addMessageToUI(type, msg.content, msg.timestamp);
         });
       } catch (err) {
@@ -363,8 +382,9 @@
       bubbleDiv.textContent = text;
       const timeSpan = document.createElement('span');
       timeSpan.className = 'time';
-      // Se formatea el timestamp
-      timeSpan.textContent = new Date(time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+      // Formatear el timestamp
+      timeSpan.textContent = new Date(time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      
       if (type === 'outgoing') {
         messageDiv.appendChild(timeSpan);
         messageDiv.appendChild(bubbleDiv);
@@ -372,9 +392,11 @@
         messageDiv.appendChild(bubbleDiv);
         messageDiv.appendChild(timeSpan);
       }
+      
       chatMessages.appendChild(messageDiv);
       chatMessages.scrollTop = chatMessages.scrollHeight;
     }
+
 
     // Enviar un mensaje (a través del servicio de mensajes en el puerto 5003)
     async function sendMessage() {
