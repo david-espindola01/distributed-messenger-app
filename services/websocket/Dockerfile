@@ -11,8 +11,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copia el resto del código
 COPY . /app/
 
-# Expone el puerto 5003
+# Expone el puerto 5000 (el contenedor escuchará en este puerto)
 EXPOSE 5000
 
-# Ejecuta el servidor WebSocket con uvicorn
-CMD ["uvicorn", "app:app"]
+# Ejecuta el servidor WebSocket con uvicorn, haciendo que escuche en todas las interfaces en el puerto 5000
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "5000"]

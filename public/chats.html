@@ -310,20 +310,27 @@
       socket.onopen = function() {
         console.log("Conexión WebSocket establecida.");
       };
-
+      
       socket.onmessage = function(event) {
         try {
           const messageData = JSON.parse(event.data);
           console.log("Mensaje recibido por WebSocket:", messageData);
-          // Si el mensaje corresponde al chat actualmente seleccionado, actualiza la interfaz
+          console.log("Chat activo:", currentChatId);
+          
           if (messageData.chat_id == currentChatId) {
             const type = String(messageData.sender_id).trim() === String(userId).trim() ? 'outgoing' : 'incoming';
+            console.log("Mostrando mensaje en chat activo");
             addMessageToUI(type, messageData.content, messageData.timestamp);
+          } else {
+            console.log("Mensaje para otro chat. Actualizando lista de chats.");
+            loadChats();
           }
         } catch (e) {
           console.error("Error al procesar el mensaje WebSocket:", e);
         }
       };
+
+
 
       socket.onerror = function(error) {
         console.error("Error en WebSocket:", error);

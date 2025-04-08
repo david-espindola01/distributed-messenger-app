@@ -45,4 +45,4 @@ async def websocket_endpoint(websocket: WebSocket):
         print(f"Usuario desconectado: {user_id}")
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=5003)
+    uvicorn.run(app, host="0.0.0.0", port=5000)
