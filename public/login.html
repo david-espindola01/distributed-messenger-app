@@ -48,7 +48,9 @@
           // Guardamos el id en localStorage (opcional)
           localStorage.setItem('user_id', userId);
           // Redirigimos pasando el id en la URL
-          document.cookie = `user_id=${encodeURIComponent(userId)}; path=/; max-age=86400; auth_token=valid`;
+          document.cookie = `user_id=${encodeURIComponent(userId)}; path=/; max-age=86400`;
+          document.cookie = "auth_token=valid; path=/; max-age=86400";
+
           window.location.href = `chats.html`;
         } else {
           loginError.textContent = 'Error al iniciar sesión: ' + (data.error || 'Desconocido');
