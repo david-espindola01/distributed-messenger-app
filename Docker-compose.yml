@@ -7,7 +7,7 @@ services:
       dockerfile: Dockerfile
     container_name: users_service
     ports:
-      - "5000:5000"
+      - "5005:5000"
     volumes:
       - ./models:/app/models
       - ./controllers:/app/controllers
@@ -16,7 +16,19 @@ services:
       - ./public:/app/public
     environment:
       - PYTHONUNBUFFERED=1
-
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: frontend_service
+    ports:
+      - "3000:3000"
+    depends_on:
+      - auth
+      - users
+      - chats
+      - messages
+      - websocket
   auth:
     build:
       context: ./services/auth

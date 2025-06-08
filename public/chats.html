@@ -305,7 +305,7 @@
     // Inicializar WebSocket para recibir mensajes en tiempo real
     function initializeWebSocket() {
       // Conecta al WebSocket (ajusta la URL y el puerto según tu configuración)
-      socket = new WebSocket("ws://localhost:5004/ws?user_id=" + userId);
+      socket = new WebSocket("ws://192.168.114.177:5004/ws?user_id=" + userId);
 
       socket.onopen = function() {
         console.log("Conexión WebSocket establecida.");
@@ -351,7 +351,7 @@
     // Cargar la lista de chats del usuario
     async function loadChats() {
       try {
-        const res = await fetch(`http://localhost:5002/user/${userId}/chats`);
+        const res = await fetch(`http://192.168.114.177:5002/user/${userId}/chats`);
         const chats = await res.json();
         const chatList = document.getElementById('chatList');
         chatList.innerHTML = '';
@@ -394,7 +394,7 @@
     // Cargar los mensajes de un chat
     async function loadMessages(chatId) {
       try {
-        const res = await fetch(`http://localhost:5003/chat/${chatId}/messages`);
+        const res = await fetch(`http://192.168.114.177:5003/chat/${chatId}/messages`);
         const messages = await res.json();
         const chatMessages = document.getElementById('chatMessages');
         chatMessages.innerHTML = '';
@@ -457,7 +457,7 @@
         }
 
         // Persiste el mensaje en el servidor vía HTTP
-        const res = await fetch('http://localhost:5003/message', {
+        const res = await fetch('http://192.168.114.177:5003/message', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
@@ -497,7 +497,7 @@
         name: chatName
       };
       try {
-        const res = await fetch('http://localhost:5002/chat', {
+        const res = await fetch('http://192.168.114.177:5002/chat', {
           method: 'POST',
           headers: {'Content-Type': 'application/json'},
           body: JSON.stringify(payload)

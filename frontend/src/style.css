@@ -1,0 +1,114 @@
+/* Estilos generales */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #fff; /* Fondo blanco para resaltar los elementos */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  
+  /* Contenedor central */
+  .container {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    border: 2px solid #000; /* Borde negro */
+  }
+  
+  /* Títulos */
+  h2 {
+    text-align: center;
+    color: #000; /* Texto negro */
+    margin-bottom: 1.5rem;
+  }
+  
+  /* Grupos de formulario */
+  .form-group {
+    margin-bottom: 1rem;
+  }
+  
+  .form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #000; /* Etiquetas en negro */
+  }
+  
+  /* Inputs */
+  input[type="text"],
+  input[type="password"] {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #000; /* Borde negro */
+    border-radius: 5px;
+    transition: border-color 0.3s;
+  }
+  
+  input[type="text"]:focus,
+  input[type="password"]:focus {
+    border-color: #ffeb3b; /* Borde amarillo al enfocar */
+    outline: none;
+  }
+  
+  /* Botón */
+  button {
+    width: 100%;
+    padding: 0.75rem;
+    background: #ffeb3b; /* Fondo amarillo */
+    border: none;
+    color: #000; /* Texto negro */
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s;
+    margin-top: 1rem;
+  }
+  
+  button:hover {
+    background: #fdd835; /* Un amarillo un poco más oscuro en hover */
+  }
+  
+  /* Resultados y errores */
+  .result, .error {
+    margin-top: 1rem;
+    text-align: center;
+    font-weight: bold;
+  }
+  
+  /* Se utiliza negro para el texto de resultados y errores */
+  .result {
+    color: #000;
+  }
+  
+  .error {
+    color: #000;
+  }
+  
+  /* Enlaces de navegación */
+  p {
+    text-align: center;
+    margin-top: 1rem;
+    color: #000;
+  }
+  
+  p a {
+    color: #ffeb3b; /* Enlace en amarillo */
+    text-decoration: none;
+    font-weight: bold;
+  }
+  
+  p a:hover {
+    text-decoration: underline;
+  }
+.welcome-message {
+    opacity: 1;
+    transition: opacity 1s ease-in-out;
+}
+.welcome-message.hidden {
+    opacity: 0;
+}
