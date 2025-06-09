@@ -1,0 +1,109 @@
+/* Estilo base */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #fff;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+/* Contenedor del formulario */
+.container {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 420px;
+  border: 2px solid #000;
+}
+
+/* Título */
+h2 {
+  text-align: center;
+  color: #000;
+  margin-bottom: 1.8rem;
+  font-size: 1.6rem;
+}
+
+/* Grupos de campos */
+.form-group {
+  margin-bottom: 1.25rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.4rem;
+  color: #000;
+  font-weight: 500;
+}
+
+/* Inputs (text, password, email) */
+input[type="text"],
+input[type="password"],
+input[type="email"] {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #000;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="email"]:focus {
+  border-color: #ffeb3b;
+  outline: none;
+  box-shadow: 0 0 4px #ffeb3b88;
+}
+
+/* Botón principal */
+button {
+  width: 100%;
+  padding: 0.8rem;
+  background: #ffeb3b;
+  border: none;
+  color: #000;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+  margin-top: 1rem;
+}
+
+button:hover {
+  background: #fdd835;
+  transform: scale(1.02);
+}
+
+/* Resultados y errores */
+.result,
+.error {
+  margin-top: 1rem;
+  text-align: center;
+  font-weight: bold;
+  color: #000;
+}
+
+/* Enlaces */
+p {
+  text-align: center;
+  margin-top: 1.2rem;
+  color: #000;
+  font-size: 0.95rem;
+}
+
+p a {
+  color: #ffeb3b;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+p a:hover {
+  text-decoration: underline;
+}
