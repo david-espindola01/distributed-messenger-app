@@ -39,4 +39,4 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
     CMD curl -f http://localhost:5000/health || exit 1
 
 # Comando para ejecutar la aplicación
-CMD ["python", "users.py"]
+CMD ["python", "service.py"]
