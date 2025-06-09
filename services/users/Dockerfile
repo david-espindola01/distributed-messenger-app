@@ -32,7 +32,7 @@ USER app
 EXPOSE 5000
 
 # Variables de entorno por defecto
-ENV FLASK_APP=users.py
+ENV FLASK_APP=service.py
 ENV FLASK_ENV=production
 ENV PYTHONUNBUFFERED=1
 
