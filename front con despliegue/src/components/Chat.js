@@ -515,15 +515,14 @@ const Chat = () => {
                                             : 'No hay mensajes'}
                                     </div>
                                 </div>
-                                {String(chat.creator_id) === String(userId) && (
-                                    <button 
-                                        className={styles.deleteChatBtn}
-                                        onClick={(e) => deleteChat(chat.chat_id, e)}
-                                        title="Borrar chat"
-                                    >
-                                        🗑️
-                                    </button>
-                                )}
+                                <button 
+                                className={styles.deleteChatBtn}
+                                onClick={(e) => deleteChat(chat.chat_id, e)}
+                                title="Borrar chat"
+                                >
+                                🗑️
+                                </button>
+
                             </div>
                         ))
                     )}
