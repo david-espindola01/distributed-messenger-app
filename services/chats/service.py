@@ -327,6 +327,28 @@ def create_chat():
        logger.error(f"Error creando chat: {e}")
        return jsonify({"error": "Error interno del servidor"}), 500
        
+def get_last_message_for_chat(chat_id):
+    conn = None
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor(cursor_factory=RealDictCursor)
+        cur.execute("""
+            SELECT content, timestamp
+            FROM messages
+            WHERE chat_id = %s
+            ORDER BY timestamp DESC
+            LIMIT 1
+        """, (chat_id,))
+        last_msg = cur.fetchone()
+        cur.close()
+        return last_msg
+    except Exception as e:
+        logger.error(f"Error en get_last_message_for_chat: {e}")
+        return None
+    finally:
+        if conn:
+            return_db_connection(conn)
+
 @app.route('/chats/<chat_id>', methods=['GET'])
 def get_chat(chat_id):
     try:
@@ -373,13 +395,16 @@ def get_user_chats_endpoint(user_id):
         for chat in user_chats:
             participants = get_chat_participants(chat["id"])
             chat_name = get_personalized_chat_name(chat, participants, user_id)
+            last_msg = get_last_message_for_chat(chat["id"])
             chats.append({
                 "chat_id": chat["id"],
                 "name": chat_name,
                 "created_at": chat["created_at"].isoformat(),
                 "updated_at": chat["updated_at"].isoformat(),
                 "is_active": chat["is_active"],
-                "is_admin": chat["is_admin"]
+                "is_admin": chat["is_admin"],
+                "last_message": last_msg["content"] if last_msg else None,
+                "last_message_time": last_msg["timestamp"].isoformat() if last_msg else None
             })
         return jsonify({
             "user_id": user_id,

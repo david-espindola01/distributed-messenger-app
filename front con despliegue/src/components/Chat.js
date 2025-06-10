@@ -457,7 +457,11 @@ const Chat = () => {
                                 <div className={styles.chatInfo}>
                                     <div className={styles.name}>{chat.name || 'Chat'}</div>
                                     <div className={styles.lastMessage}>
-                                        {chat.last_message || 'No hay mensajes'}
+                                        {chat.last_message
+                                            ? chat.last_message.length > 30
+                                                ? chat.last_message.slice(0, 30) + '...'
+                                                : chat.last_message
+                                            : 'No hay mensajes'}
                                     </div>
                                 </div>
                             </div>
