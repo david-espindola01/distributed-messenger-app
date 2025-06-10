@@ -16,7 +16,7 @@ const Login = () => {
 
     try {
       // Asegúrate de usar el protocolo correcto (http o https)
-      const response = await fetch('http://18.218.82.108:5000/login', {
+      const response = await fetch('https://18.218.82.108.nip.io:5000/login', {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
