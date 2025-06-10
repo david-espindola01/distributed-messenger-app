@@ -401,8 +401,8 @@
 }
 
 .createChatModalBtn {
-    width: auto; /* Cambiado de 100% */
-    padding: 12px 25px; /* Reducido */
+    width: auto;
+    padding: 12px 25px;
     background-color: #ffc107;
     color: #333;
     border: none;
@@ -442,7 +442,7 @@
 }
 
 .createFirstChatBtn {
-    padding: 10px 20px; /* Reducido */
+    padding: 10px 20px;
     background-color: #ffc107;
     color: #333;
     border: none;
@@ -472,7 +472,7 @@
 }
 
 .createChatWelcomeBtn {
-    padding: 12px 25px; /* Reducido */
+    padding: 12px 25px;
     background-color: #ffc107;
     color: #333;
     border: none;
@@ -588,3 +588,79 @@
     color: #666;
 }
 
+/* Avatar para mensajes */
+.messageAvatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: #ffc107;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin-right: 10px;
+    flex-shrink: 0;
+    cursor: default;
+}
+
+.messageActions {
+    display: flex;
+    align-items: center;
+    margin-top: 4px;
+}
+
+/* Mejoras de scroll */
+.chatMessages::-webkit-scrollbar {
+    width: 8px;
+}
+
+.chatMessages::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.chatMessages::-webkit-scrollbar-thumb {
+    background: #c5c5c5;
+    border-radius: 4px;
+}
+
+.chatMessages::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+.connectionStatus {
+    margin-left: 8px;
+    font-size: 12px;
+}
+
+.connected {
+    color: #4caf50;
+}
+
+.disconnected {
+    color: #f44336;
+}
+
+.connectionInfo {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+    gap: 10px;
+}
+
+.reconnectingText {
+    font-size: 14px;
+    color: #f44336;
+    font-weight: 500;
+}
+
+.reconnectBtn {
+    padding: 6px 12px;
+    background-color: #ffc107;
+    color: #333;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}

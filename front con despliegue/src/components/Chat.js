@@ -19,6 +19,7 @@ const Chat = () => {
     const [users, setUsers] = useState([]);
     const [selectedUsers, setSelectedUsers] = useState([]);
     const [isConnected, setIsConnected] = useState(false);
+    
     const userId = getCookie('user_id');
     const socketRef = useRef(null);
     const chatMessagesRef = useRef(null);
@@ -30,7 +31,7 @@ const Chat = () => {
     const maxReconnectAttempts = 5;
     const isManualDisconnectRef = useRef(false);
     
-    // NUEVO: Ref para mantener el currentChatId actualizado en el WebSocket
+    // Ref para mantener el currentChatId actualizado en el WebSocket
     const currentChatIdRef = useRef(currentChatId);
 
     // Actualizar el ref cada vez que cambie currentChatId
@@ -58,6 +59,12 @@ const Chat = () => {
             );
         }
     }, [messages]);
+
+    // Función para obtener nombre de usuario
+    const getUserName = useCallback((userId) => {
+        const user = users.find(u => String(u.id || u.user_id) === String(userId));
+        return user ? `${user.first_name} ${user.last_name}` : `Usuario ${userId}`;
+    }, [users]);
 
     // Crear loadChats primero para evitar problemas de dependencias
     const loadChats = useCallback(async () => {
@@ -400,6 +407,12 @@ const Chat = () => {
         }
     }, [userId, loadChats]);
 
+    // Obtener inicial del nombre del remitente
+    const getInitial = (userId) => {
+        const name = getUserName(userId);
+        return name.charAt(0).toUpperCase();
+    };
+
     return (
         <div className={styles.chatContainer}>
             <div className={styles.sidebar}>
@@ -492,23 +505,39 @@ const Chat = () => {
                                     <p>Envía un mensaje para comenzar la conversación</p>
                                 </div>
                             ) : (
-                                messages.map((msg, index) => (
-                                    <div 
-                                        key={`${msg.sender_id}-${msg.timestamp}-${index}`} 
-                                        className={`${styles.message} ${
-                                            String(msg.sender_id) === String(userId) ? styles.outgoing : styles.incoming
-                                        }`}
-                                        ref={index === messages.length - 1 ? lastMessageRef : null}
-                                    >
-                                        <div className={styles.bubble}>{msg.content}</div>
-                                        <span className={styles.time}>
-                                            {new Date(msg.timestamp).toLocaleTimeString([], { 
-                                                hour: '2-digit', 
-                                                minute: '2-digit' 
-                                            })}
-                                        </span>
-                                    </div>
-                                ))
+                                messages.map((msg, index) => {
+                                    const isOwnMessage = String(msg.sender_id) === String(userId);
+                                    
+                                    return (
+                                        <div 
+                                            key={`${msg.sender_id}-${msg.timestamp}-${index}`} 
+                                            className={`${styles.message} ${
+                                                isOwnMessage ? styles.outgoing : styles.incoming
+                                            }`}
+                                            ref={index === messages.length - 1 ? lastMessageRef : null}
+                                        >
+                                            {/* Avatar para mensajes entrantes */}
+                                            {!isOwnMessage && (
+                                                <div 
+                                                    className={styles.messageAvatar}
+                                                    title={getUserName(msg.sender_id)}
+                                                >
+                                                    {getInitial(msg.sender_id)}
+                                                </div>
+                                            )}
+                                            <div className={styles.bubble}>{msg.content}</div>
+                                            
+                                            <div className={styles.messageActions}>
+                                                <span className={styles.time}>
+                                                    {new Date(msg.timestamp).toLocaleTimeString([], { 
+                                                        hour: '2-digit', 
+                                                        minute: '2-digit' 
+                                                    })}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    );
+                                })
                             )}
                         </div>
                         
@@ -623,3 +652,4 @@ const Chat = () => {
 };
 
 export default Chat;
+
