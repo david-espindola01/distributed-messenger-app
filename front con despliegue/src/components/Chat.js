@@ -42,23 +42,15 @@ const Chat = () => {
 
     // Efecto para desplazamiento automático al final de los mensajes
     useEffect(() => {
-        if (chatMessagesRef.current) {
-            chatMessagesRef.current.scrollTop = chatMessagesRef.current.scrollHeight;
-        }
-        
-        if (lastMessageRef.current) {
-            lastMessageRef.current.animate(
-                [
-                    { transform: 'translateY(10px)', opacity: 0 },
-                    { transform: 'translateY(0)', opacity: 1 }
-                ],
-                {
-                    duration: 300,
-                    easing: 'ease-out'
+        if (!isLoading && messages.length > 0) {
+            const timeout = setTimeout(() => {
+                if (chatMessagesRef.current) {
+                    chatMessagesRef.current.scrollTop = chatMessagesRef.current.scrollHeight;
                 }
-            );
+            }, 0);
+            return () => clearTimeout(timeout);
         }
-    }, [messages]);
+    }, [messages, isLoading, currentChatId]);
 
     // Función para obtener nombre de usuario
     const getUserName = useCallback((userId) => {
