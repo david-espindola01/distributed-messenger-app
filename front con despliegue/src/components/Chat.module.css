@@ -665,3 +665,76 @@
     font-weight: 600;
     transition: all 0.3s ease;
 }
+
+/* Estilos para botones de borrar */
+.deleteMessageBtn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #999;
+    font-size: 14px;
+    opacity: 0;
+    transition: all 0.3s ease;
+    padding: 0 5px;
+    transform: translateY(2px);
+}
+
+.message:hover .deleteMessageBtn {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.deleteMessageBtn:hover {
+    color: #f44336;
+    animation: shake 0.5s ease;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-2px); }
+    40%, 80% { transform: translateX(2px); }
+}
+
+.deleteChatBtn {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #999;
+    font-size: 16px;
+    opacity: 0;
+    transition: all 0.3s ease;
+    padding: 5px;
+}
+
+.chatItem:hover .deleteChatBtn {
+    opacity: 1;
+}
+
+.deleteChatBtn:hover {
+    color: #f44336;
+    animation: pulse 0.5s ease;
+}
+
+@keyframes pulse {
+    0% { transform: translateY(-50%) scale(1); }
+    50% { transform: translateY(-50%) scale(1.2); }
+    100% { transform: translateY(-50%) scale(1); }
+}
+
+/* Animación para eliminación de elementos */
+@keyframes fadeOut {
+    from { opacity: 1; transform: translateY(0); }
+    to { opacity: 0; transform: translateY(-10px); height: 0; padding: 0; margin: 0; }
+}
+
+.message.deleting {
+    animation: fadeOut 0.3s forwards;
+}
+
+.chatItem.deleting {
+    animation: fadeOut 0.3s forwards;
+}

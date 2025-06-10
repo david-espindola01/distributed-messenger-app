@@ -393,6 +393,65 @@ const Chat = () => {
         }
     };
 
+    // Función para eliminar un mensaje
+    const deleteMessage = async (messageId) => {
+        if (!window.confirm('¿Seguro que quieres borrar este mensaje?')) {
+            return;
+        }
+
+        try {
+            const res = await fetch(`https://messages-service-production.up.railway.app/messages/${messageId}`, {
+                method: 'DELETE'
+            });
+
+            if (res.ok) {
+                // Eliminar el mensaje del estado local
+                setMessages(prev => prev.filter(msg => msg.message_id !== messageId));
+                // Recargar chats para actualizar el último mensaje
+                loadChats();
+            } else {
+                const errorText = await res.text();
+                console.error("Error al borrar el mensaje:", errorText);
+                alert('Error al borrar el mensaje');
+            }
+        } catch (err) {
+            console.error("Error de red:", err);
+            alert('Error de red al intentar borrar el mensaje');
+        }
+    };
+
+    // Función para eliminar un chat
+    const deleteChat = async (chatId, event) => {
+        event.stopPropagation(); // Evita que se active el evento de selección del chat
+
+        if (!window.confirm('¿Seguro que quieres borrar este chat? Todos los mensajes se perderán.')) {
+            return;
+        }
+
+        try {
+            const res = await fetch(`https://chats-service-production.up.railway.app/chats/${chatId}`, {
+                method: 'DELETE'
+            });
+
+            if (res.ok) {
+                // Si el chat borrado es el actual, cerramos la conversación
+                if (currentChatId === chatId) {
+                    setCurrentChatId(null);
+                    setMessages([]);
+                }
+                // Recargar la lista de chats
+                await loadChats();
+            } else {
+                const errorText = await res.text();
+                console.error("Error al borrar el chat:", errorText);
+                alert('Error al borrar el chat');
+            }
+        } catch (err) {
+            console.error("Error de red:", err);
+            alert('Error de red al intentar borrar el chat');
+        }
+    };
+
     useEffect(() => {
         if (userId) {
             loadChats();
@@ -456,6 +515,15 @@ const Chat = () => {
                                             : 'No hay mensajes'}
                                     </div>
                                 </div>
+                                {String(chat.creator_id) === String(userId) && (
+                                    <button 
+                                        className={styles.deleteChatBtn}
+                                        onClick={(e) => deleteChat(chat.chat_id, e)}
+                                        title="Borrar chat"
+                                    >
+                                        🗑️
+                                    </button>
+                                )}
                             </div>
                         ))
                     )}
@@ -530,6 +598,15 @@ const Chat = () => {
                                                         minute: '2-digit' 
                                                     })}
                                                 </span>
+                                                {isOwnMessage && (
+                                                    <button 
+                                                        className={styles.deleteMessageBtn}
+                                                        onClick={() => deleteMessage(msg.message_id)}
+                                                        title="Borrar mensaje"
+                                                    >
+                                                        🗑️
+                                                    </button>
+                                                )}
                                             </div>
                                         </div>
                                     );
@@ -648,4 +725,3 @@ const Chat = () => {
 };
 
 export default Chat;
-
